@@ -8,6 +8,7 @@ export default function App(){
   const [tab,setTab]=useState('live')
   const [page,setPage]=useState('home')
   const [search,setSearch]=useState('')
+  const [chatUser,setChatUser]=useState(null)
   const boxRef=useRef(null)
 
   const users = [
@@ -20,6 +21,12 @@ export default function App(){
 
   const filtered = users.filter(u => u.name.toLowerCase().includes(search.toLowerCase()))
 
+  function handleFollow(u){
+    setChatUser(u)
+    setPage('home')
+    setTab('secret')
+  }
+
   useEffect(()=>{
     async function load(){
       const { data } = await supabase.from('messages').select('*').order('created_at',{ascending:true}).limit(50)
@@ -27,7 +34,7 @@ export default function App(){
     }
     load()
     const channel = supabase.channel('socialloop-chat')
- .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},(p)=>{
+.on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},(p)=>{
         setMessages(prev=>[...prev, p.new])
       }).subscribe()
     return ()=>{ supabase.removeChannel(channel) }
@@ -37,7 +44,8 @@ export default function App(){
 
   async function sendMessage(){
     if(!text.trim()) return
-    await supabase.from('messages').insert([{ text: text }])
+    const msgText = chatUser? `@${chatUser.name}: ${text}` : text
+    await supabase.from('messages').insert([{ text: msgText }])
     setText('')
   }
 
@@ -54,7 +62,7 @@ export default function App(){
           <>
             <div style={{display:'flex',gap:12,padding:'10px 16px',overflowX:'auto'}}>
               {users.map(u=>(
-                <div key={u.name} style={{textAlign:'center',minWidth:62}}>
+                <div key={u.name} onClick={()=>handleFollow(u)} style={{textAlign:'center',minWidth:62,cursor:'pointer'}}>
                   <div style={{width:62,height:62,borderRadius:'50%',padding:2,background:'linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf)'}}>
                     <div style={{background:'#08080a',borderRadius:'50%',padding:2}}>
                       <img src={`https://randomuser.me/api/portraits/women/${u.img}.jpg`} style={{width:'100%',borderRadius:'50%',display:'block'}}/>
@@ -82,9 +90,10 @@ export default function App(){
 
             <div style={{background:'#131315',margin:'8px 0',padding:16}}>
               <div style={{display:'flex',gap:8,marginBottom:12}}>
-                <button onClick={()=>setTab('live')} style={{flex:1,padding:'10px',borderRadius:20,border:'none',background:tab==='live'?'#c084fc':'#232326',color:tab==='live'?'#000':'#fff',fontWeight:'bold'}}>Live Chat</button>
-                <button onClick={()=>setTab('secret')} style={{flex:1,padding:'10px',borderRadius:20,border:'none',background:tab==='secret'?'#c084fc':'#232326',color:tab==='secret'?'#000':'#fff',fontWeight:'bold'}}>Secret Inbox</button>
+                <button onClick={()=>{setTab('live');setChatUser(null)}} style={{flex:1,padding:'10px',borderRadius:20,border:'none',background:tab==='live'?'#c084fc':'#232326',color:tab==='live'?'#000':'#fff',fontWeight:'bold'}}>Live Chat</button>
+                <button onClick={()=>setTab('secret')} style={{flex:1,padding:'10px',borderRadius:20,border:'none',background:tab==='secret'?'#c084fc':'#232326',color:tab==='secret'?'#000':'#fff',fontWeight:'bold'}}>Secret Inbox{chatUser?` • ${chatUser.name}`:''}</button>
               </div>
+
               {tab==='live' && (
                 <>
                   <div ref={boxRef} style={{height:200,overflowY:'auto',background:'#08080a',padding:10,borderRadius:12,border:'1px solid #232326'}}>
@@ -97,10 +106,31 @@ export default function App(){
                   </div>
                 </>
               )}
+
               {tab==='secret' && (
-                <div style={{background:'#08080a',borderRadius:12,border:'1px solid #232326',padding:40,textAlign:'center'}}>
-                  <div style={{fontSize:40}}>🔒</div><div style={{fontSize:14,marginTop:8,opacity:0.7}}>Secret Inbox<br/>Only you can see these<br/>Like Facebook Requests</div>
-                </div>
+                <>
+                  {chatUser? (
+                    <>
+                      <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',background:'#1a1a1e',borderRadius:12,marginBottom:10}}>
+                        <img src={`https://randomuser.me/api/portraits/women/${chatUser.img}.jpg`} style={{width:36,height:36,borderRadius:'50%'}}/>
+                        <div><div style={{fontWeight:'bold',fontSize:14}}>{chatUser.name}</div><div style={{fontSize:11,color:'#22c55e'}}>● Active • Secret chat</div></div>
+                        <span style={{marginLeft:'auto',fontSize:12,opacity:0.6}} onClick={()=>setChatUser(null)}>✕</span>
+                      </div>
+                      <div ref={boxRef} style={{height:200,overflowY:'auto',background:'#08080a',padding:10,borderRadius:12,border:'1px solid #232326'}}>
+                        <div style={{textAlign:'center',opacity:0.5,fontSize:12,padding:20}}>🔒 Secret conversation with {chatUser.name}<br/>Messages are end-to-end encrypted</div>
+                        {messages.filter(m=>m.text.includes(`@${chatUser.name}`)).map((m,idx)=>(<div key={idx} style={{background:'#c084fc',color:'#000',padding:'8px 12px',borderRadius:15,margin:'5px 0',maxWidth:'80%',marginLeft:'auto',fontSize:14}}>{m.text.replace(`@${chatUser.name}: `,'')}</div>))}
+                      </div>
+                    </>
+                  ) : (
+                    <div style={{background:'#08080a',borderRadius:12,border:'1px solid #232326',padding:30,textAlign:'center'}}>
+                      <div style={{fontSize:36}}>🔒</div><div style={{fontSize:13,marginTop:8,opacity:0.7}}>No secret chat selected<br/>Go to Search → Tap Follow to start secret chat</div>
+                    </div>
+                  )}
+                  <div style={{display:'flex',gap:8,marginTop:12}}>
+                    <input value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&sendMessage()} placeholder={chatUser?`Secret message to ${chatUser.name}...`:"Select a user first"} style={{flex:1,padding:'12px 16px',borderRadius:25,border:'1px solid #2a2a2e',background:'#1a1a1e',color:'#fff'}}/>
+                    <button onClick={sendMessage} style={{padding:'12px 20px',borderRadius:25,border:'none',background:'#c084fc',color:'#000',fontWeight:'bold'}}>Send Secret</button>
+                  </div>
+                </>
               )}
             </div>
           </>
@@ -110,7 +140,7 @@ export default function App(){
           <div style={{padding:16}}>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search people... e.g. sarah" autoFocus style={{width:'100%',padding:'14px 18px',borderRadius:25,border:'1px solid #2a2a2e',background:'#1a1a1e',color:'#fff',fontSize:15}}/>
             <div style={{marginTop:16}}>
-              <div style={{fontSize:13,opacity:0.6,marginBottom:10}}>People in Lesotho • {filtered.length} found</div>
+              <div style={{fontSize:13,opacity:0.6,marginBottom:10}}>People in Lesotho • {filtered.length} found • Tap Follow for secret chat</div>
               {filtered.map(u=>(
                 <div key={u.name} style={{display:'flex',alignItems:'center',gap:12,padding:'12px 0',borderBottom:'1px solid #1a1a1e'}}>
                   <img src={`https://randomuser.me/api/portraits/women/${u.img}.jpg`} style={{width:48,height:48,borderRadius:'50%'}}/>
@@ -118,10 +148,9 @@ export default function App(){
                     <div style={{fontWeight:'bold',fontSize:14}}>{u.name}</div>
                     <div style={{fontSize:12,opacity:0.6}}>{u.city} • {u.followers} followers</div>
                   </div>
-                  <button style={{padding:'6px 18px',borderRadius:20,border:'none',background:'#c084fc',color:'#000',fontWeight:'bold',fontSize:13}}>Follow</button>
+                  <button onClick={()=>handleFollow(u)} style={{padding:'6px 18px',borderRadius:20,border:'none',background:'#c084fc',color:'#000',fontWeight:'bold',fontSize:13}}>Follow</button>
                 </div>
               ))}
-              {filtered.length===0 && <div style={{textAlign:'center',marginTop:40,opacity:0.5}}>No user found for "{search}"</div>}
             </div>
           </div>
         )}
@@ -140,4 +169,4 @@ export default function App(){
       </div>
     </div>
   )
-   }
+}
