@@ -1,0 +1,9 @@
+{
+  "name": "SocialLoop",
+  "short_name": "SocialLoop",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111113",
+  "theme_color": "#a855f7",
+  "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/2111/2111463.png","sizes":"512x512","type":"image/png"}]
+}
