@@ -1,70 +1,81 @@
 <!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SocialLoop REAL</title>
+<title>SocialLoop</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#000;color:#fff}
-#login{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px}
-.inputL{background:#1a1a1a;border:1px solid #2a2a2a;padding:14px 18px;border-radius:14px;color:#fff;width:100%;max-width:340px;margin-top:10px}
-.btnL{background:#c084fc;border:none;padding:14px;border-radius:24px;font-weight:900;width:100%;max-width:340px;margin-top:14px;color:#000}
-.tab{display:flex;gap:20px;margin:14px 0}.tab div{padding:6px 12px;border-bottom:2px solid transparent;color:#666}.tab div.on{color:#fff;border-color:#c084fc}
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px}
+.inputL{background:#1a1a1a;border:1px solid #333;padding:14px 18px;border-radius:14px;color:#fff;width:100%;max-width:340px;margin-top:10px;font-size:16px}
+.btnL{background:#c084fc;border:none;padding:16px;border-radius:24px;font-weight:900;width:100%;max-width:340px;margin-top:14px;color:#000;font-size:16px}
+.tab{display:flex;gap:20px;margin:14px 0}.tab div{padding:6px 12px;border-bottom:2px solid transparent;color:#666;cursor:pointer}.tab div.on{color:#fff;border-color:#c084fc}
+#msg{color:#ff8fab;margin-top:10px;text-align:center;min-height:20px}
 .header{display:flex;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #222}
-.logo{font-weight:900;font-size:22px}.logo span{color:#c084fc}
-.postCard{background:#0a0a0a;margin:8px 0;border-bottom:1px solid #222}
-.pHead{display:flex;justify-content:space-between;padding:10px 14px}
-.pHeadLeft{display:flex;gap:10px;align-items:center}.pHeadLeft img{width:36px;height:36px;border-radius:50%}
-.pImg img{width:100%;max-height:480px;object-fit:cover}
-.page{padding:12px;display:none;padding-bottom:80px}.page.active{display:block}
-.searchItem{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #222;align-items:center}
-.followBtn{background:#c084fc;border:none;padding:6px 14px;border-radius:16px;font-weight:700;color:#000}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#000;display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid #222}
-.ni{color:#666;text-align:center;font-size:11px}.ni.on{color:#c084fc}
-.plus{background:#c084fc;color:#000;width:52px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}
-.chat{height:220px;background:#141414;border-radius:16px;padding:8px;overflow-y:auto;margin-top:8px;display:flex;flex-direction:column;gap:6px}
-.bubble{padding:8px 12px;border-radius:16px;max-width:80%;font-size:13px;display:flex;justify-content:space-between}
-.me{background:#c084fc;color:#000;align-self:flex-end}.other{background:#333;align-self:flex-start}
-.row{display:flex;gap:8px;margin-top:8px}.inp{flex:1;background:#1e1e1e;border:none;border-radius:20px;padding:10px 14px;color:#fff}
-.snd{background:#c084fc;border:none;border-radius:20px;padding:10px 16px;font-weight:800}.del{color:#ff4444;margin-left:8px;font-weight:900}
+.postCard{background:#0a0a0a;margin:8px 0;border-bottom:1px solid #222}.pHead{display:flex;justify-content:space-between;padding:10px 14px}.pHeadLeft{display:flex;gap:10px;align-items:center}.pHeadLeft img{width:36px;height:36px;border-radius:50%}.pImg img{width:100%;max-height:480px;object-fit:cover}
+.page{padding:12px;display:none;padding-bottom:80px}.page.active{display:block}.searchItem{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #222;align-items:center}.followBtn{background:#c084fc;border:none;padding:6px 14px;border-radius:16px;font-weight:700;color:#000}.nav{position:fixed;bottom:0;left:0;right:0;background:#000;display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid #222}.ni{color:#666;text-align:center;font-size:11px}.ni.on{color:#c084fc}.plus{background:#c084fc;color:#000;width:52px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}.chat{height:220px;background:#141414;border-radius:16px;padding:8px;overflow-y:auto;margin-top:8px;display:flex;flex-direction:column;gap:6px}.bubble{padding:8px 12px;border-radius:16px;max-width:80%;font-size:13px;display:flex;justify-content:space-between}.me{background:#c084fc;color:#000;align-self:flex-end}.other{background:#333;align-self:flex-start}.row{display:flex;gap:8px;margin-top:8px}.inp{flex:1;background:#1e1e1e;border:none;border-radius:20px;padding:10px 14px;color:#fff}.snd{background:#c084fc;border:none;border-radius:20px;padding:10px 16px;font-weight:800}
 </style></head><body>
 <div id="login">
-<h1>Social<span style="color:#c084fc">Loop</span></h1>
+<h1 style="font-size:38px">Social<span style="color:#c084fc">Loop</span></h1>
 <div class="tab"><div id="tLogin" class="on" onclick="switchTab('login')">Log In</div><div id="tSignup" onclick="switchTab('signup')">Sign Up</div></div>
-<!-- LOGIN FORM -->
 <div id="loginForm" style="width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center">
 <input id="loginInput" class="inputL" placeholder="Email / Username / Phone">
-<input id="loginPass" type="hidden">
 <button class="btnL" onclick="doLogin()">Enter</button>
-<p style="color:#888;font-size:12px;margin-top:10px">Tip: Use username without space e.g limpho</p>
 </div>
-<!-- SIGNUP FORM -->
 <div id="signupForm" style="width:100%;max-width:340px;display:none;flex-direction:column;align-items:center">
-<input id="su_email" class="inputL" placeholder="Email address">
-<input id="su_fullname" class="inputL" placeholder="Full name">
-<input id="su_username" class="inputL" placeholder="Username (no spaces)">
-<input id="su_phone" class="inputL" placeholder="Phone number (+266...)">
+<input id="su_email" class="inputL" placeholder="Email address" type="email">
+<input id="su_fullname" class="inputL" placeholder="Full Name e.g Limpho Mantoro">
+<input id="su_username" class="inputL" placeholder="username e.g ausydee">
+<input id="su_phone" class="inputL" placeholder="Phone e.g +26657530108">
 <button class="btnL" onclick="doSignup()">Create Account</button>
 </div>
+<div id="msg"></div>
 </div>
 <div id="app" style="display:none">
-<div class="header"><div class="logo">Social<span>Loop</span></div><div onclick="logout()" style="color:#888;font-size:12px">Logout</div></div>
+<div class="header"><div style="font-weight:900;font-size:22px">Social<span style="color:#c084fc">Loop</span></div><div onclick="logout()" style="color:#888;font-size:12px">Logout</div></div>
 <div id="pageHome" class="page active"><div id="feed"></div><div style="padding:10px"><div class="chat" id="chat"></div><div class="row"><input id="msgInp" class="inp" placeholder="Message..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="snd" onclick="sendMsg()">Send</button></div></div></div>
-<div id="pageSearch" class="page"><h3>Search Users</h3><input id="searchInp" class="inp" placeholder="Search username / email / phone..." oninput="doSearch()" style="margin:10px 0"><div id="searchRes"></div></div>
-<div id="pageCreate" class="page"><h3>Create Post</h3><input id="capInp" class="inputL" placeholder="Write caption..." style="max-width:100%"><input type="file" id="fileInp" accept="image/*" style="margin:12px 0"><button class="btnL" style="max-width:100%" onclick="createPost()">Post Now</button><p id="postStatus" style="margin-top:10px;color:#c084fc"></p></div>
+<div id="pageSearch" class="page"><h3>Search Users</h3><input id="searchInp" class="inp" placeholder="Search..." oninput="doSearch()" style="margin:10px 0"><div id="searchRes"></div></div>
+<div id="pageCreate" class="page"><h3>Create Post</h3><input id="capInp" class="inputL" placeholder="Caption..." style="max-width:100%"><input type="file" id="fileInp" accept="image/*" style="margin:12px 0"><button class="btnL" style="max-width:100%" onclick="createPost()">Post Now</button><p id="postStatus" style="margin-top:10px;color:#c084fc"></p></div>
 <div id="pageProfile" class="page"><div id="profileBox"></div><div id="myPosts"></div></div>
 <div class="nav"><div class="ni on" onclick="nav('Home')">Home</div><div class="ni" onclick="nav('Search')">Search</div><div class="plus" onclick="nav('Create')">+</div><div class="ni" onclick="nav('Profile')">Profile</div></div></div>
 <script>
 const URL='https://ysfjnpyhwogfjkdzruqz.supabase.co';const KEY='sb_publishable_MMVTip9_ZpJOpyilnXPF3w_SnXHgnfL';const supa=supabase.createClient(URL,KEY);let ME=null;
-function switchTab(t){document.getElementById('loginForm').style.display=t==='login'?'flex':'none';document.getElementById('signupForm').style.display=t==='signup'?'flex':'none';document.getElementById('tLogin').className=t==='login'?'on':'';document.getElementById('tSignup').className=t==='signup'?'on':'';}
-async function doSignup(){const email=document.getElementById('su_email').value.trim();const full=document.getElementById('su_fullname').value.trim();let user=document.getElementById('su_username').value.trim().toLowerCase().replace(/\s+/g,'_');const phone=document.getElementById('su_phone').value.trim();if(!user||!email)return alert('Email and username required');const id=crypto.randomUUID();const {error}=await supa.from('profiles').insert([{id:id,username:user,email:email,phone:phone,full_name:full,avatar:'https://i.pravatar.cc/150?u='+user}]);if(error){alert(error.message);return;}ME={id:id,username:user,email:email,phone:phone};localStorage.setItem('sl_user',JSON.stringify(ME));document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';init();}
-async function doLogin(){try{let q=document.getElementById('loginInput').value.trim().toLowerCase();if(!q)return alert('Enter email / username / phone');let {data}=await supa.from('profiles').select('*').or(`username.eq.${q},email.eq.${q},phone.eq.${q}`).maybeSingle();if(!data){let {data:d2}=await supa.from('profiles').select('*').ilike('username',q).maybeSingle();data=d2;}if(!data)return alert('User not found. Sign up first.');ME=data;localStorage.setItem('sl_user',JSON.stringify(ME));document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';init();}catch(e){alert(e.message)}}
-function logout(){localStorage.clear();location.reload();}function nav(p){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page'+p).classList.add('active');if(p==='Profile')loadProfile();if(p==='Search')doSearch();}
-async function loadFeed(){const{data}=await supa.from('posts').select('*').order('created_at',{ascending:false}).limit(30);const f=document.getElementById('feed');f.innerHTML='';if(data)data.forEach(po=>{f.innerHTML+=`<div class="postCard"><div class="pHead"><div class="pHeadLeft"><img src="https://i.pravatar.cc/150?u=${po.username}"><b>${po.username}</b></div><div onclick="delPost('${po.id}','${po.user_id}')" style="cursor:pointer">•••</div></div>${po.image_url?`<div class="pImg"><img src="${po.image_url}"></div>`:''}<div style="padding:0 14px 10px">${po.caption||''}</div></div>`});}
-async function createPost(){const cap=document.getElementById('capInp').value;const file=document.getElementById('fileInp').files[0];let imgUrl='';if(file){const name=Date.now()+'_'+file.name;document.getElementById('postStatus').innerText='Uploading...';const {error}=await supa.storage.from('post-images').upload(name,file);if(error)return alert(error.message);imgUrl=supa.storage.from('post-images').getPublicUrl(name).data.publicUrl;}document.getElementById('postStatus').innerText='Posting...';await supa.from('posts').insert([{user_id:ME.id,username:ME.username,caption:cap,image_url:imgUrl}]);document.getElementById('postStatus').innerText='Posted!';loadFeed();nav('Home');}
-async function delPost(id,uid){if(uid!==ME.id)return alert('Not yours');await supa.from('posts').delete().eq('id',id);loadFeed();loadProfile();}
-function addMsg(r){const c=document.getElementById('chat'),d=document.createElement('div');d.className='bubble '+(r.username===ME.username?'me':'other');d.innerHTML=`<span>@${r.username}: ${r.text}</span>${r.username===ME.username?`<span class="del" onclick="delMsg('${r.id}')"> x</span>`:''}`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
-async function loadChat(){const{data}=await supa.from('messages').select('*').eq('mode','live').order('created_at',{ascending:true}).limit(100);document.getElementById('chat').innerHTML='';if(data)data.forEach(addMsg);}async function sendMsg(){const e=document.getElementById('msgInp'),t=e.value.trim();if(!t)return;e.value='';await supa.from('messages').insert([{text:t,username:ME.username,mode:'live'}]);}async function delMsg(id){await supa.from('messages').delete().eq('id',id);loadChat();}
-async function doSearch(){const q=(document.getElementById('searchInp')?.value||'').toLowerCase();let query=supa.from('profiles').select('*');if(q)query=query.or(`username.ilike.%${q}%,email.ilike.%${q}%,phone.ilike.%${q}%`);const{data}=await query.limit(20);const res=document.getElementById('searchRes');res.innerHTML='';if(data)data.forEach(u=>{res.innerHTML+=`<div class="searchItem"><div style="display:flex;gap:10px;align-items:center"><img src="${u.avatar||'https://i.pravatar.cc/150?u='+u.username}" style="width:36px;height:36px;border-radius:50%"><div><b>${u.username}</b><br><small style="color:#888">${u.email||''} ${u.phone||''}</small></div></div><button class="followBtn" onclick="toggleFollow('${u.id}')" id="f_${u.id}">Follow</button></div>`;checkFollow(u.id);});}
-async function checkFollow(id){const{data}=await supa.from('follows').select('*').eq('follower_id',ME.id).eq('following_id',id).single();const b=document.getElementById('f_'+id);if(b)b.textContent=data?'Unfollow':'Follow';}async function toggleFollow(id){const{data}=await supa.from('follows').select('*').eq('follower_id',ME.id).eq('following_id',id).single();if(data){await supa.from('follows').delete().eq('follower_id',ME.id).eq('following_id',id);}else{await supa.from('follows').insert([{follower_id:ME.id,following_id:id}]);}checkFollow(id);}
-async function loadProfile(){const{data:posts}=await supa.from('posts').select('*').eq('user_id',ME.id).order('created_at',{ascending:false});const{data:followers}=await supa.from('follows').select('*').eq('following_id',ME.id);const{data:following}=await supa.from('follows').select('*').eq('follower_id',ME.id);document.getElementById('profileBox').innerHTML=`<div style="text-align:center;padding:20px"><img src="https://i.pravatar.cc/150?u=${ME.username}" style="width:80px;height:80px;border-radius:50%"><h2>${ME.username}</h2><p style="color:#888">${ME.email||''} • ${ME.phone||''}</p><p>${followers?.length||0} followers • ${following?.length||0} following • ${posts?.length||0} posts</p></div>`;const mp=document.getElementById('myPosts');mp.innerHTML='';if(posts)posts.forEach(p=>{mp.innerHTML+=`<div class="postCard">${p.image_url?`<div class="pImg"><img src="${p.image_url}"></div>`:''}<div style="padding:8px">${p.caption} <span style="float:right;color:#f44" onclick="delPost('${p.id}','${p.user_id}')">Delete</span></div></div>`});}
-function init(){loadFeed();loadChat();supa.channel('realtime').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>addMsg(p.new)).on('postgres_changes',{event:'INSERT',schema:'public',table:'posts'},()=>loadFeed()).subscribe();}
+function showMsg(t){document.getElementById('msg').innerText=t;}
+function switchTab(t){document.getElementById('loginForm').style.display=t==='login'?'flex':'none';document.getElementById('signupForm').style.display=t==='signup'?'flex':'none';document.getElementById('tLogin').className=t==='login'?'on':'';document.getElementById('tSignup').className=t==='signup'?'on':'';showMsg('');}
+async function doSignup(){
+  showMsg('Creating...');
+  const email=document.getElementById('su_email').value.trim();
+  const fullName=document.getElementById('su_fullname').value.trim(); // KEEPS Capitals and Space!
+  let username=document.getElementById('su_username').value.trim();
+  const phone=document.getElementById('su_phone').value.trim();
+  if(!email||!username){showMsg('Email and username needed');return;}
+  if(username.includes(' ')){showMsg('Username no spaces, use ausydee. Full name can have space.');return;}
+  const usernameLower=username.toLowerCase();
+  const id=crypto.randomUUID();
+  const {error}=await supa.from('profiles').insert([{id:id,username:usernameLower,email:email.toLowerCase(),phone:phone,full_name:fullName,avatar:'https://i.pravatar.cc/150?u='+usernameLower}]);
+  if(error){showMsg('Error: '+error.message);return;}
+  ME={id:id,username:usernameLower,email:email,phone:phone,full_name:fullName};
+  localStorage.setItem('sl_user',JSON.stringify(ME));
+  showMsg('Account created! Entering...');
+  document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';init();
+}
+async function doLogin(){
+  showMsg('Logging in...');
+  let q=document.getElementById('loginInput').value.trim().toLowerCase();
+  if(!q){showMsg('Type email / username / phone');return;}
+  let {data,error}=await supa.from('profiles').select('*').or(`username.eq.${q},email.eq.${q},phone.eq.${q}`).maybeSingle();
+  if(error){showMsg(error.message);return;}
+  if(!data){showMsg('User not found. Sign up first.');return;}
+  ME=data;localStorage.setItem('sl_user',JSON.stringify(ME));
+  document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';init();
+}
+function logout(){localStorage.clear();location.reload();}
+function nav(p){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page'+p).classList.add('active');}
+async function loadFeed(){const{data}=await supa.from('posts').select('*').order('created_at',{ascending:false}).limit(30);const f=document.getElementById('feed');f.innerHTML='';if(data)data.forEach(po=>{f.innerHTML+=`<div class="postCard"><div class="pHead"><div class="pHeadLeft"><img src="https://i.pravatar.cc/150?u=${po.username}"><b>${po.username}</b></div></div>${po.image_url?`<div class="pImg"><img src="${po.image_url}"></div>`:''}<div style="padding:0 14px 10px">${po.caption||''}</div></div>`});}
+async function createPost(){const cap=document.getElementById('capInp').value;const file=document.getElementById('fileInp').files[0];let imgUrl='';if(file){const name=Date.now()+'_'+file.name;document.getElementById('postStatus').innerText='Uploading...';const {error}=await supa.storage.from('post-images').upload(name,file);if(error){document.getElementById('postStatus').innerText=error.message;return;}imgUrl=supa.storage.from('post-images').getPublicUrl(name).data.publicUrl;}document.getElementById('postStatus').innerText='Posting...';await supa.from('posts').insert([{user_id:ME.id,username:ME.username,caption:cap,image_url:imgUrl}]);document.getElementById('postStatus').innerText='Posted!';loadFeed();nav('Home');}
+function addMsg(r){const c=document.getElementById('chat'),d=document.createElement('div');d.className='bubble '+(r.username===ME.username?'me':'other');d.innerHTML=`<span>@${r.username}: ${r.text}</span>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+async function loadChat(){const{data}=await supa.from('messages').select('*').eq('mode','live').order('created_at',{ascending:true}).limit(100);document.getElementById('chat').innerHTML='';if(data)data.forEach(addMsg);}
+async function sendMsg(){const e=document.getElementById('msgInp'),t=e.value.trim();if(!t)return;e.value='';await supa.from('messages').insert([{text:t,username:ME.username,mode:'live'}]);}
+async function doSearch(){const q=(document.getElementById('searchInp')?.value||'').toLowerCase();let query=supa.from('profiles').select('*');if(q)query=query.or(`username.ilike.%${q}%,email.ilike.%${q}%,full_name.ilike.%${q}%`);const{data}=await query.limit(20);const res=document.getElementById('searchRes');res.innerHTML='';if(data)data.forEach(u=>{res.innerHTML+=`<div class="searchItem"><div style="display:flex;gap:10px;align-items:center"><img src="https://i.pravatar.cc/150?u=${u.username}" style="width:36px;height:36px;border-radius:50%"><div><b>${u.full_name||u.username}</b><br><small style="color:#888">@${u.username}</small></div></div><button class="followBtn" onclick="toggleFollow('${u.id}')" id="f_${u.id}">Follow</button></div>`;});}
+async function toggleFollow(id){const{data}=await supa.from('follows').select('*').eq('follower_id',ME.id).eq('following_id',id).single();if(data){await supa.from('follows').delete().eq('follower_id',ME.id).eq('following_id',id);}else{await supa.from('follows').insert([{follower_id:ME.id,following_id:id}]);}}
+async function loadProfile(){const{data:posts}=await supa.from('posts').select('*').eq('user_id',ME.id).order('created_at',{ascending:false});document.getElementById('profileBox').innerHTML=`<div style="text-align:center;padding:20px"><img src="https://i.pravatar.cc/150?u=${ME.username}" style="width:80px;height:80px;border-radius:50%"><h2>${ME.full_name||ME.username}</h2><p>@${ME.username} • ${ME.email||''}</p></div>`;}
+function init(){loadFeed();loadChat();supa.channel('realtime').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>addMsg(p.new)).subscribe();}
 const saved=localStorage.getItem('sl_user');if(saved){ME=JSON.parse(saved);document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';init();}
 </script></body></html>
