@@ -1,97 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SOCIALLOOP REAL</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SocialLoop</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#080808;color:#fff;height:100vh;display:flex;flex-direction:column}
-.header{padding:14px;background:#000;display:flex;justify-content:space-between;border-bottom:1px solid #222}
-.logo{font-weight:900;font-size:18px}.logo span{color:#c084fc}
-.chat{flex:1;margin:8px 12px;background:#0e0e0e;border-radius:20px;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
-.msg{padding:10px 14px;border-radius:18px;max-width:82%;font-size:14px;word-break:break-word}
+body{background:#000;color:#fff;padding-bottom:80px}
+.header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#0a0a0a;border-bottom:1px solid #222}
+.logo{font-weight:900;font-size:26px;letter-spacing:-0.5px}.logo span{color:#c084fc}
+.hIcons{display:flex;gap:16px;font-size:22px}
+.stories{display:flex;gap:14px;overflow-x:auto;padding:14px 12px;background:#0a0a0a;scrollbar-width:none}
+.story{text-align:center;min-width:72px}
+.ring{width:68px;height:68px;border-radius:50%;padding:3px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}
+.ring img{width:100%;height:100%;border-radius:50%;border:3px solid #000;object-fit:cover}
+.sname{font-size:12px;margin-top:6px;white-space:nowrap}
+.postHead{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0a0a0a}
+.phLeft{display:flex;gap:10px;align-items:center}
+.phLeft img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.pName{font-weight:700;font-size:15px}.pSub{font-size:12px;color:#888}
+.postBody{height:380px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:600}
+.chatWrap{padding:12px;background:#0a0a0a}
+.tabs{display:flex;gap:10px;margin-bottom:10px}
+.tab{flex:1;padding:12px;border-radius:24px;border:none;font-weight:800;font-size:14px}
+.tab.active{background:#c084fc;color:#000}
+.tab.inactive{background:#222;color:#fff}
+.chat{height:260px;background:#141414;border-radius:18px;padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.bubble{padding:10px 14px;border-radius:18px;max-width:80%;font-size:13px}
 .me{background:#c084fc;color:#000;align-self:flex-end}
 .other{background:#3b3bff;color:#fff;align-self:flex-start}
-.inputRow{display:flex;gap:8px;padding:12px;background:#000}
-.input{flex:1;background:#1a1a1a;border:none;border-radius:24px;padding:13px 18px;color:#fff;outline:none}
-.sendBtn{background:#c084fc;border:none;border-radius:24px;padding:12px 22px;font-weight:900;cursor:pointer}
-.chips{display:flex;gap:10px;padding:10px 12px}
-.chip{flex:1;padding:13px;border-radius:24px;border:none;font-weight:800;cursor:pointer}
-.active{outline:2px solid #c084fc}
+.row{display:flex;gap:8px;margin-top:10px}
+.input{flex:1;background:#1e1e1e;border:none;border-radius:24px;padding:13px 16px;color:#fff;outline:none}
+.send{background:#c084fc;border:none;border-radius:24px;padding:12px 20px;font-weight:900}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#000;display:flex;justify-content:space-around;align-items:center;padding:10px 0;border-top:1px solid #222}
+.navI{color:#555;text-align:center;font-size:12px}.navI.active{color:#c084fc}
+.plus{background:#c084fc;color:#000;width:56px;height:38px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900}
 </style>
 </head>
 <body>
-<div class="header">
-<div class="logo">SOCIAL<span>LOOP</span> REAL</div>
-<div style="color:#22c55e;font-size:11px">● LIVE</div>
+<div class="header"><div class="logo">Social<span>Loop</span></div><div class="hIcons"><span>♡</span><span>💬 0</span></div></div>
+
+<div class="stories">
+<div class="story"><div class="ring"><img src="https://i.pravatar.cc/150?img=1"></div><div class="sname">sarah_vi</div></div>
+<div class="story"><div class="ring"><img src="https://i.pravatar.cc/150?img=2"></div><div class="sname">teboho_l</div></div>
+<div class="story"><div class="ring"><img src="https://i.pravatar.cc/150?img=3"></div><div class="sname">limpho_m</div></div>
+<div class="story"><div class="ring"><img src="https://i.pravatar.cc/150?img=4"></div><div class="sname">kananelo</div></div>
+<div class="story"><div class="ring"><img src="https://i.pravatar.cc/150?img=5"></div><div class="sname">puse</div></div>
 </div>
-<div class="chips">
-<button class="chip active" id="btnLive" onclick="switchMode('live')" style="background:#c084fc;color:#000">Live Chat</button>
-<button class="chip" id="btnSecret" onclick="switchMode('secret')" style="background:#1e1e1e;color:#fff">Secret Inbox</button>
+
+<div class="postHead">
+<div class="phLeft"><img src="https://i.pravatar.cc/150?img=1"><div><div class="pName">sarah_vibes</div><div class="pSub">Maseru • 2h ago</div></div></div>
+<div>•••</div>
 </div>
-<div id="status" style="font-size:11px;color:#22c55e;padding:0 14px 4px"></div>
+<div class="postBody">🔥 Night Vibes</div>
+
+<div class="chatWrap">
+<div class="tabs">
+<button class="tab active" id="bLive" onclick="switchM('live')">Live Chat</button>
+<button class="tab inactive" id="bSecret" onclick="switchM('secret')">Secret Inbox</button>
+</div>
+<div id="stat" style="font-size:10px;color:#22c55e;margin-bottom:6px"></div>
 <div class="chat" id="chat"></div>
-<div class="inputRow">
-<input class="input" id="input" placeholder="Type message..." onkeydown="if(event.key==='Enter')send()">
-<button class="sendBtn" onclick="send()">Send</button>
+<div class="row"><input class="input" id="inp" placeholder="Type..." onkeydown="if(event.key==='Enter')send()"><button class="send" onclick="send()">Send</button></div>
+</div>
+
+<div class="nav">
+<div class="navI active">⌂<br>Home</div><div class="navI">⌕<br>Search</div><div class="plus">+</div><div class="navI">⧉<br>Reels</div><div class="navI">○<br>Profile</div>
 </div>
 
 <script>
-const SUPABASE_URL = 'https://ysfjnpyhwogfjkdzruqz.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_MMVTip9_ZpJOpyilnXPF3w_SnXHgnfL';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let MODE = 'live';
-let USERNAME = 'user_' + Math.floor(Math.random()*9000);
-
-function switchMode(m){
- MODE = m;
- document.getElementById('btnLive').className = m==='live'?'chip active':'chip';
- document.getElementById('btnLive').style.background = m==='live'?'#c084fc':'#1e1e1e';
- document.getElementById('btnLive').style.color = m==='live'?'#000':'#fff';
- document.getElementById('btnSecret').className = m==='secret'?'chip active':'chip';
- document.getElementById('btnSecret').style.background = m==='secret'?'#c084fc':'#1e1e1e';
- document.getElementById('btnSecret').style.color = m==='secret'?'#000':'#fff';
- document.getElementById('chat').innerHTML = '';
- loadMessages();
-}
-
-function addMessage(row){
- const chat = document.getElementById('chat');
- const div = document.createElement('div');
- div.className = 'msg ' + (row.username===USERNAME?'me':'other');
- div.textContent = '@'+row.username+': '+row.text;
- chat.appendChild(div);
- chat.scrollTop = chat.scrollHeight;
-}
-
-async function loadMessages(){
- const {data, error} = await supabaseClient.from('messages').select('*').eq('mode', MODE).order('created_at',{ascending:true}).limit(200);
- if(!error && data){
-  document.getElementById('chat').innerHTML='';
-  data.forEach(addMessage);
- }
-}
-
-async function send(){
- const el = document.getElementById('input');
- const text = el.value.trim();
- if(!text) return;
- el.value='';
- await supabaseClient.from('messages').insert([{text:text, username:USERNAME, mode:MODE}]);
-}
-
-async function init(){
- document.getElementById('status').innerText = 'Connected as @'+USERNAME+' | DB: ysfjnpyhwogfjkdzruqz';
- await loadMessages();
- supabaseClient.channel('realtime-messages')
- .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
-  if(payload.new.mode===MODE) addMessage(payload.new);
- }).subscribe();
-}
-init();
+const SUPA_URL='https://ysfjnpyhwogfjkdzruqz.supabase.co';
+const SUPA_KEY='sb_publishable_MMVTip9_ZpJOpyilnXPF3w_SnXHgnfL';
+const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+let MODE='live';
+let ME='user_'+Math.floor(Math.random()*9000);
+function switchM(m){MODE=m;document.getElementById('bLive').className=m==='live'?'tab active':'tab inactive';document.getElementById('bSecret').className=m==='secret'?'tab active':'tab inactive';document.getElementById('chat').innerHTML='';load();}
+function addMsg(r){const c=document.getElementById('chat');const d=document.createElement('div');d.className='bubble '+(r.username===ME?'me':'other');d.textContent='@'+r.username+': '+r.text;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+async function load(){const {data}=await supa.from('messages').select('*').eq('mode',MODE).order('created_at',{ascending:true}).limit(100);if(data){document.getElementById('chat').innerHTML='';data.forEach(addMsg);}}
+async function send(){const e=document.getElementById('inp');const t=e.value.trim();if(!t)return;e.value='';await supa.from('messages').insert([{text:t,username:ME,mode:MODE}]);}
+(async()=>{document.getElementById('stat').innerText='Connected as @'+ME+' | DB ysfjnpyhwogfjkdzruqz';await load();supa.channel('real').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>{if(p.new.mode===MODE)addMsg(p.new);}).subscribe();})();
 </script>
 </body>
-</html>
+                  </html> 
