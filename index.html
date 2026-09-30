@@ -1,152 +1,127 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SocialLoop Pro</title>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,interactive-widget=resizes-content"><title>SocialLoop</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#000;color:#fff;min-height:100vh}
-.box{max-width:380px;margin:0 auto;padding:20px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
-.input{background:#161616;border:1px solid #333;padding:16px;border-radius:14px;color:#fff;width:100%;margin-top:12px;font-size:16px;outline:none}
-.btn{background:#c084fc;border:none;padding:16px;border-radius:28px;font-weight:900;width:100%;margin-top:14px;color:#000;font-size:16px;cursor:pointer}
-.link{color:#c084fc;text-align:center;margin-top:14px;cursor:pointer;font-size:14px}
-.header{position:sticky;top:0;background:#000;padding:12px;border-bottom:1px solid #222;display:flex;justify-content:space-between;z-index:10}
-.page{display:none;max-width:600px;margin:0 auto;width:100%;padding-bottom:90px;flex:1;overflow:auto}.page.on{display:block}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0;max-width:600px;margin:0 auto}
-.ni{color:#666;font-size:11px;text-align:center;cursor:pointer}.ni.on{color:#c084fc}
-.chat{padding:12px;display:flex;flex-direction:column;gap:8px;min-height:300px}
-.bubble{padding:10px 14px;border-radius:18px;max-width:78%;font-size:14px}
-.me{background:#c084fc;color:#000;align-self:flex-end}.other{background:#222;align-self:flex-start}
-.row{display:flex;gap:8px;padding:10px;background:#111;border-top:1px solid #222;position:sticky;bottom:0}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#000;color:#fff;height:100dvh;display:flex;flex-direction:column}
+.inputL{background:#e8efff;border:none;padding:16px 20px;border-radius:14px;color:#000;width:100%;max-width:360px;margin-top:12px;font-size:15px;outline:none}
+.btnL{background:#c084fc;border:none;padding:16px;border-radius:28px;font-weight:900;width:100%;max-width:360px;margin-top:14px;color:#000;cursor:pointer}
+.header{padding:14px 16px;border-bottom:1px solid #1a1a1a;display:flex;justify-content:space-between;align-items:center;background:#000;position:sticky;top:0;z-index:10}
+.page{display:none;flex:1;overflow-y:auto;max-width:600px;margin:0 auto;width:100%;padding-bottom:90px;flex-direction:column}.page.on{display:flex}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #1a1a1a;display:flex;justify-content:space-around;padding:8px 0 12px;max-width:600px;margin:0 auto;width:100%;z-index:20}
+.ni{color:#555;font-size:10px;text-align:center;cursor:pointer;line-height:12px}.ni.on{color:#c084fc}
+.plus{background:#c084fc;color:#000;width:36px;height:28px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
+.statusRow{display:flex;gap:16px;padding:16px;align-items:center;border-bottom:1px solid #111}
+.avatar{width:58px;height:58px;border-radius:50%;object-fit:cover}
+.addStatus{width:58px;height:58px;border-radius:50%;background:#1a1a1a;border:1px dashed #444;display:flex;align-items:center;justify-content:center;font-size:22px;color:#777}
+.liveCard{border:3px solid #c084fc;border-radius:18px;padding:6px;margin:12px;background:#0a0a0a;position:relative}
+.liveCard img{width:100%;border-radius:12px;display:block}
+.dot{width:10px;height:10px;border-radius:50%;background:#333;display:inline-block}.dot.on{background:#25D366;box-shadow:0 0 6px #25D366}
+.row{display:flex;gap:8px;padding:10px;background:#111;border-top:1px solid #222;align-items:center;position:sticky;bottom:0;width:100%}
 .inp{flex:1;background:#1e1e1e;border:1px solid #333;border-radius:22px;padding:14px;color:#fff;outline:none;font-size:16px}
-.snd{background:#c084fc;border:none;border-radius:20px;padding:12px 18px;font-weight:800;color:#000}
+.snd{background:#c084fc;border:none;border-radius:20px;padding:10px 16px;font-weight:800;color:#000}
+.pill{padding:6px 14px;border-radius:18px;border:none;font-size:12px;cursor:pointer}.pill.on{background:#c084fc;color:#000;font-weight:700}.pill.off{background:#222;color:#fff}
+.bubble{padding:10px 14px;border-radius:18px;max-width:78%;font-size:13px}.me{background:#c084fc;color:#000;align-self:flex-end}.other{background:#222;align-self:flex-start}
+.tick{font-size:11px}.blue{color:#1e90ff}.grey{color:#888}
 </style></head><body>
 
-<!-- LOGIN -->
-<div id="loginPage" class="box">
-<h1 style="font-size:36px;font-weight:900;text-align:center">Social<span style="color:#c084fc">Loop</span> Pro</h1>
-<p style="text-align:center;color:#666;font-size:13px;margin-top:6px">Login to continue</p>
-<input id="lUser" class="input" placeholder="Username or Email">
-<input id="lPass" class="input" type="password" placeholder="Password">
-<button class="btn" onclick="doLogin()">LOGIN</button>
-<div class="link" onclick="showSignup()">Don't have account? <b>Sign Up</b></div>
-<div id="lMsg" style="color:#ff7b7b;text-align:center;margin-top:10px;font-size:12px"></div>
+<div id="login" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px">
+<h1 style="font-size:36px;font-weight:900">Social<span style="color:#c084fc">Loop</span></h1>
+<input id="loginInput" class="inputL" placeholder="mantorolimpho@gmail.com" value="mantorolimpho@gmail.com">
+<button class="btnL" onclick="doLogin()">Enter</button>
 </div>
 
-<!-- SIGNUP -->
-<div id="signupPage" class="box" style="display:none">
-<h1 style="font-size:36px;font-weight:900;text-align:center">Create Account</h1>
-<input id="sName" class="input" placeholder="Full Name - e.g Limpho Mantoro">
-<input id="sUser" class="input" placeholder="Username - e.g limpho123">
-<input id="sEmail" class="input" placeholder="Email - mantorolimpho@gmail.com">
-<input id="sPass" class="input" type="password" placeholder="Password">
-<button class="btn" onclick="doSignup()">SIGN UP</button>
-<div class="link" onclick="showLogin()">Already have account? <b>Login</b></div>
-<div id="sMsg" style="color:#ff7b7b;text-align:center;margin-top:10px;font-size:12px"></div>
-</div>
-
-<!-- APP -->
-<div id="app" style="display:none;flex-direction:column;min-height:100vh">
-<div class="header"><b>Social<span style="color:#c084fc">Loop</span></b><span id="myName" style="color:#888;font-size:12px"></span></div>
+<div id="app" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+<div class="header"><div style="font-weight:900;font-size:18px">Social<span style="color:#c084fc">Loop</span></div><div style="font-size:12px;color:#888" id="topEmail"></div></div>
 
 <div id="pFeed" class="page on"><div id="feed"></div></div>
-<div id="pLive" class="page"><div style="padding:10px;font-weight:700;border-bottom:1px solid #222">Live Box 🟢</div><div id="liveList" class="chat"></div><div class="row"><input id="liveInp" class="inp" placeholder="Message everyone..."><button class="snd" onclick="sendLive()">Send</button></div></div>
-<div id="pInbox" class="page"><div id="inboxList"></div><div id="secretBox" style="display:none"><div id="secretTitle" style="padding:10px;font-weight:700;border-bottom:1px solid #222"></div><div id="secretMsgs" class="chat"></div><div class="row"><input id="secretInp" class="inp" placeholder="Type..."><button class="snd" onclick="sendSecret()">Send</button></div></div></div>
-<div id="pReels" class="page"><div id="reelsList"></div><div class="row"><input id="reelInp" class="inp" placeholder="Comment on reel..."><button class="snd" onclick="commentReel()">Send</button></div></div>
-<div id="pCreate" class="page" style="padding:16px"><h3>Create Post / Reel</h3><select id="cType" class="input"><option value="post">Post</option><option value="reel">Reel</option></select><input id="cCap" class="input" placeholder="Caption"><input type="file" id="cFile" accept="image/*,video/*" style="margin:12px 0"><button class="btn" onclick="doCreate()">POST NOW</button><p id="cMsg" style="color:#c084fc"></p></div>
 
-<div class="nav"><div class="ni on" id="nFeed" onclick="nav('Feed')">🏠<br>Feed</div><div class="ni" id="nLive" onclick="nav('Live')">🔴<br>Live</div><div class="ni" onclick="nav('Create')"><div style="background:#c084fc;color:#000;padding:6px 14px;border-radius:10px;font-weight:900">+</div></div><div class="ni" id="nReels" onclick="nav('Reels')">🎬<br>Reels</div><div class="ni" id="nInbox" onclick="nav('Inbox')">📩<br>Inbox</div></div>
+<div id="pLive" class="page"><div style="padding:14px 16px;font-weight:700;border-bottom:1px solid #111">Live Box <span class="dot on"></span></div><div id="liveList" style="flex:1;overflow-y:auto"></div><div class="row"><input id="liveInp" class="inp" placeholder="Message everyone..."><label for="liveImg" style="font-size:20px">📷</label><input type="file" id="liveImg" accept="image/*" style="display:none" onchange="sendLiveImg(event)"><button class="snd" onclick="sendLive()">Send</button></div></div>
+
+<div id="pReels" class="page"><div id="reelsList" style="flex:1"></div><div class="row"><input id="reelInp" class="inp" placeholder="Comment on reel..."><button class="snd" onclick="commentReel()">Send</button></div></div>
+
+<div id="pStatus" class="page"><div class="statusRow"><div><div class="addStatus" onclick="nav('Create')">+</div><div style="font-size:10px;color:#666;margin-top:4px">Add Status</div></div><div style="text-align:center"><img id="myAvatar" class="avatar" style="border:2px solid #c084fc"><div style="font-size:11px;margin-top:4px" id="myEmail2"></div></div></div><div style="padding:16px"><b>Status</b><br><small style="color:#666">Disappears after 24 hours</small><div id="statusList" style="margin-top:12px;display:flex;gap:10px;overflow-x:auto"></div></div></div>
+
+<div id="pInbox" class="page"><div style="padding:14px 16px;font-weight:700;border-bottom:1px solid #111;display:flex;justify-content:space-between"><span>Inbox</span><span id="backBtn" style="display:none;color:#c084fc" onclick="closeChat()">Back</span></div><div id="inboxList" style="flex:1;overflow-y:auto"></div><div id="secretBox" style="display:none;flex:1;flex-direction:column;overflow:hidden"><div id="secretName" style="padding:10px;font-weight:700;border-bottom:1px solid #222"></div><div id="secretMsgs" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px"></div><div class="row"><input id="secretInp" class="inp" placeholder="Type message..."><button class="snd" onclick="sendSecret()">Send</button></div></div></div>
+
+<div id="pCreate" class="page" style="padding:16px"><h2 style="margin-bottom:12px">Create</h2><div style="display:flex;gap:8px;margin-bottom:12px"><button class="pill on" id="bPost" onclick="setM('post')">Post</button><button class="pill off" id="bReel" onclick="setM('reel')">Reels</button><button class="pill off" id="bStatus" onclick="setM('status')">Status</button></div><input id="cCap" class="inputL" placeholder="Caption..." style="max-width:100%;background:#1a1a1a;color:#fff;border:1px solid #333"><input type="file" id="cFile" accept="image/*,video/*" style="margin:14px 0;color:#888"><button class="btnL" style="max-width:100%" onclick="doCreate()">Share Now</button><p id="cMsg" style="color:#c084fc;margin-top:10px"></p></div>
+
+<div class="nav"><div class="ni on" id="nFeed" onclick="nav('Feed')">🏠<br>Feed</div><div class="ni" id="nLive" onclick="nav('Live')">🔴<br>Live Box</div><div class="ni" onclick="nav('Create')"><div class="plus">+</div></div><div class="ni" id="nReels" onclick="nav('Reels')">🎬<br>Reels</div><div class="ni" id="nStatus" onclick="nav('Status')">⭕<br>Status</div><div class="ni" id="nInbox" onclick="nav('Inbox')">📩<br>Inbox</div></div>
 </div>
 
 <script>
-const SUPA_URL="https://ysfjnpyhwogfjkdzruqz.supabase.co";
-const SUPA_KEY="sb_publishable_MMVTip9_ZpJOpyilnXPF3w_SnXHgnfL";
-let sb=null; try{sb=supabase.createClient(SUPA_URL,SUPA_KEY);}catch(e){}
-let ME=null, CUR_CHAT=null, CUR_REEL=null;
+const SUPA_URL="https://ysfjnpyhwogfjkdzruqz.supabase.co";const SUPA_KEY="sb_publishable_MMVTip9_ZpJOpyilnXPF3w_SnXHgnfL";let sb=null;try{sb=supabase.createClient(SUPA_URL,SUPA_KEY);}catch(e){}
+let ME=null,MODE='post',CUR=null,CUR_REEL=null;
 
-function showSignup(){document.getElementById('loginPage').style.display='none';document.getElementById('signupPage').style.display='flex';}
-function showLogin(){document.getElementById('signupPage').style.display='none';document.getElementById('loginPage').style.display='flex';}
-
-function doSignup(){
- let name=document.getElementById('sName').value.trim();
- let user=document.getElementById('sUser').value.trim().toLowerCase().replace(/\s+/g,'');
- let email=document.getElementById('sEmail').value.trim().toLowerCase();
- let pass=document.getElementById('sPass').value.trim();
- if(!name||!user||!email||!pass){document.getElementById('sMsg').innerText='Fill all fields';return;}
- ME={id:Date.now().toString(), username:user, full_name:name, email:email, password:pass, avatar:'https://i.pravatar.cc/150?u='+user, online:true, last_seen:Date.now()};
- let users=JSON.parse(localStorage.getItem('sl_all_users')||'[]');
- users.push(ME); localStorage.setItem('sl_all_users',JSON.stringify(users));
- localStorage.setItem('sl_user',JSON.stringify(ME));
- if(sb){sb.from('users').insert(ME).then(()=>{});}
- enterApp();
-}
-
-function doLogin(){
- let u=document.getElementById('lUser').value.trim().toLowerCase();
- let p=document.getElementById('lPass').value.trim();
- if(!u||!p){document.getElementById('lMsg').innerText='Enter username and password';return;}
- let users=JSON.parse(localStorage.getItem('sl_all_users')||'[]');
- let found=users.find(x=> (x.username===u || x.email===u) && x.password===p);
- if(found){ ME=found; }
- else {
-  // if not in local, allow any username for now so app never gets stuck
-  ME={id:Date.now().toString(), username:u.split('@')[0].replace(/\s+/g,''), full_name:u, email:u.includes('@')?u:'', password:p, avatar:'https://i.pravatar.cc/150?u='+u, online:true, last_seen:Date.now()};
-  users.push(ME); localStorage.setItem('sl_all_users',JSON.stringify(users));
- }
- localStorage.setItem('sl_user',JSON.stringify(ME));
- enterApp();
- if(sb &&!found){ sb.from('users').select('*').or(`username.eq.${ME.username},email.eq.${ME.email}`).then(async ({data})=>{ if(!data||data.length===0){ await sb.from('users').insert(ME); }}); }
-}
-
-function enterApp(){
- document.getElementById('loginPage').style.display='none';
- document.getElementById('signupPage').style.display='none';
- document.getElementById('app').style.display='flex';
- document.getElementById('myName').innerText=ME.username;
- loadFeed(); loadLive(); loadInbox(); loadReels();
-}
-
-function nav(p){
- document.querySelectorAll('.page').forEach(e=>e.classList.remove('on'));
- document.getElementById('p'+p).classList.add('on');
- document.querySelectorAll('.ni').forEach(e=>e.classList.remove('on'));
- let el=document.getElementById('n'+p); if(el) el.classList.add('on');
- if(p==='Feed') loadFeed(); if(p==='Live') loadLive(); if(p==='Inbox') loadInbox(); if(p==='Reels') loadReels();
-}
+function doLogin(){let q=document.getElementById('loginInput').value.trim().toLowerCase()||'mantorolimpho@gmail.com';ME={id:Date.now().toString(),username:q.split('@')[0].replace(/\s+/g,''),email:q,full_name:q,avatar:'https://i.pravatar.cc/150?u='+q,online:true,last_seen:Date.now()};localStorage.setItem('sl_user',JSON.stringify(ME));document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('topEmail').innerText=q;document.getElementById('myEmail2').innerText=q;document.getElementById('myAvatar').src=ME.avatar;if(sb){sb.from('users').upsert(ME).then(()=>{});setInterval(()=>{if(sb)sb.from('users').update({online:true,last_seen:Date.now()}).eq('id',ME.id).then(()=>{});},30000);}init();}
+function setM(m){MODE=m;document.getElementById('bPost').className=m==='post'?'pill on':'pill off';document.getElementById('bReel').className=m==='reel'?'pill on':'pill off';document.getElementById('bStatus').className=m==='status'?'pill on':'pill off';}
+function nav(p){document.querySelectorAll('.page').forEach(e=>e.classList.remove('on'));document.getElementById('p'+p).classList.add('on');document.querySelectorAll('.ni').forEach(e=>e.classList.remove('on'));let el=document.getElementById('n'+p);if(el)el.classList.add('on');if(p==='Feed')loadFeed();if(p==='Live')loadLive();if(p==='Reels')loadReels();if(p==='Status')loadStatus();if(p==='Inbox')loadInbox();}
 
 async function loadFeed(){
- let posts=[]; if(sb){ try{ let r=await sb.from('posts').select('*').order('created_at',{ascending:false}).limit(50); posts=r.data||[]; }catch(e){} }
- let local=JSON.parse(localStorage.getItem('sl_posts')||'[]'); posts=[...posts,...local];
- let f=document.getElementById('feed'); if(posts.length===0){f.innerHTML='<div style="padding:40px;text-align:center;color:#666">No posts yet.<br>Tap + to create</div>';return;}
- f.innerHTML=posts.map(p=>`<div style="border-bottom:1px solid #1a1a1a"><div style="display:flex;gap:8px;padding:10px;align-items:center"><img src="${p.avatar||'https://i.pravatar.cc/150'}" style="width:32px;height:32px;border-radius:50%"><b>${p.full_name||p.username}</b> <small style="color:#666">@${p.username}</small></div>${p.image?`<img src="${p.image}" style="width:100%">`:''}<div style="padding:8px 12px">${p.caption||''}</div></div>`).join('');
+ if(!sb) return;
+ let {data:posts}=await sb.from('posts').select('*').eq('type','post').order('created_at',{ascending:false}).limit(50);
+ let {data:likes}=await sb.from('likes').select('*');
+ let {data:comments}=await sb.from('comments').select('*');
+ let {data:blocks}=await sb.from('blocks').select('*').eq('blocker',ME.username);
+ let {data:users}=await sb.from('users').select('*');
+ let blocked=(blocks||[]).map(b=>b.blocked);
+ let f=document.getElementById('feed');
+ if(!posts||posts.length===0){f.innerHTML='<div style="padding:40px;text-align:center;color:#666">No posts yet<br>Tap + to create first post</div>';return;}
+ f.innerHTML=posts.filter(p=>!blocked.includes(p.username)).map(p=>{
+  let u=users?.find(x=>x.username===p.username); let isOnline=u && (Date.now()-u.last_seen<120000);
+  let lc=(likes||[]).filter(l=>l.post_id===p.id).length; let isLiked=(likes||[]).some(l=>l.post_id===p.id&&l.username===ME.username);
+  let cc=(comments||[]).filter(c=>c.post_id===p.id);
+  return `<div style="border-bottom:1px solid #111"><div style="display:flex;gap:8px;padding:10px;align-items:center"><img src="${p.avatar}" style="width:32px;height:32px;border-radius:50%"><div style="flex:1"><b>${p.username}</b> <span class="dot ${isOnline?'on':''}"></span><br><small style="color:#666">${isOnline?'Online':'Offline'}</small></div><div style="display:flex;gap:6px"><button onclick="reportPost(${p.id},'${p.username}')" style="background:#1a1a1a;color:#888;border:none;padding:4px 6px;border-radius:8px;font-size:10px">Report</button><button onclick="blockUser('${p.username}')" style="background:#1a1a1a;color:#888;border:none;padding:4px 6px;border-radius:8px;font-size:10px">Block</button>${p.username===ME.username?`<button onclick="deletePost(${p.id})" style="background:#300;color:#f88;border:none;padding:4px 6px;border-radius:8px;font-size:10px">Delete</button>`:''}</div></div>${p.image?`<img src="${p.image}" style="width:100%">`:''}<div style="padding:8px 12px">${p.caption||''}</div><div style="display:flex;gap:16px;padding:8px 12px;border-top:1px solid #111"><span onclick="likePost(${p.id})" style="cursor:pointer">${isLiked?'❤️':'🤍'} ${lc} Like</span><span onclick="document.getElementById('cbox${p.id}').style.display=document.getElementById('cbox${p.id}').style.display==='flex'?'none':'flex'" style="cursor:pointer">💬 ${cc.length} Comment</span></div><div id="cbox${p.id}" style="display:none;padding:8px;gap:6px;flex-direction:column"><div>${cc.map(c=>`<div style="font-size:12px;padding:4px 0"><b>${c.username}:</b> ${c.text} ${c.username===ME.username?`<span onclick="deleteComment(${c.id})" style="color:#f55;cursor:pointer"> x</span>`:''}</div>`).join('')}</div><div style="display:flex;gap:6px"><input id="cinp${p.id}" class="inp" style="position:static;padding:10px" placeholder="Comment..."><button class="snd" style="position:static;padding:8px 12px" onclick="addComment(${p.id})">Send</button></div></div></div>`;
+ }).join('');
 }
-async function doCreate(){
- let cap=document.getElementById('cCap').value; let type=document.getElementById('cType').value; let file=document.getElementById('cFile').files[0];
- if(!file) return document.getElementById('cMsg').innerText='Pick image';
- let fr=new FileReader(); fr.onload=async()=>{
-  let post={id:Date.now(), user_id:ME.id, username:ME.username, full_name:ME.full_name, avatar:ME.avatar, caption:cap, image:fr.result, type:type, created_at:Date.now()};
-  let local=JSON.parse(localStorage.getItem('sl_posts')||'[]'); local.unshift(post); localStorage.setItem('sl_posts',JSON.stringify(local));
-  if(sb){ try{ await sb.from('posts').insert({user_id:ME.id, username:ME.username, full_name:ME.full_name, avatar:ME.avatar, caption:cap, image:fr.result, type:type, created_at:Date.now()}); }catch(e){} }
-  document.getElementById('cMsg').innerText='Posted!'; nav('Feed');
- }; fr.readAsDataURL(file);
-}
+async function likePost(id){ if(!sb) return; let {data}=await sb.from('likes').select('*').eq('post_id',id).eq('username',ME.username); if(data&&data.length>0) await sb.from('likes').delete().eq('post_id',id).eq('username',ME.username); else await sb.from('likes').insert({post_id:id, username:ME.username, created_at:Date.now()}); loadFeed(); }
+async function addComment(pid){ let t=document.getElementById('cinp'+pid).value.trim(); if(!t||!sb) return; document.getElementById('cinp'+pid).value=''; await sb.from('comments').insert({post_id:pid, username:ME.username, text:t, created_at:Date.now()}); loadFeed(); }
+async function deleteComment(id){ if(!confirm('Delete comment?')) return; await sb.from('comments').delete().eq('id',id); loadFeed(); }
+async function deletePost(id){ if(!confirm('Delete your post?')) return; await sb.from('posts').delete().eq('id',id); loadFeed(); }
+async function blockUser(u){ if(!confirm('Block '+u+'? You will not see their posts')) return; await sb.from('blocks').insert({blocker:ME.username, blocked:u}); loadFeed(); alert('Blocked '+u); }
+async function reportPost(id,u){ let reason=prompt('Report '+u+' - reason?'); if(!reason) return; await sb.from('reports').insert({post_id:id, reporter:ME.username, reported_user:u, reason:reason, created_at:Date.now()}); alert('Reported - thanks'); }
+
 async function loadLive(){
- if(!sb){ document.getElementById('liveList').innerHTML='<div style="padding:10px;color:#666">Live needs internet, but local posts work</div>'; return; }
- let {data}=await sb.from('live_messages').select('*').order('created_at',{ascending:true}).limit(100);
- document.getElementById('liveList').innerHTML=(data||[]).map(m=>`<div class="bubble ${m.username===ME.username?'me':'other'}"><b style="font-size:10px">${m.username}</b><br>${m.text||''}${m.image?`<img src="${m.image}" style="max-width:160px;border-radius:8px;margin-top:5px">`:''}</div>`).join('');
+ if(!sb) return;
+ let {data}=await sb.from('live_messages').select('*').order('created_at',{ascending:true}).limit(80);
+ document.getElementById('liveList').innerHTML=(data||[]).map(m=>{
+  let canDel=m.username===ME.username?`<button onclick="deleteLive(${m.id})" style="background:#300;color:#f88;border:none;padding:2px 6px;border-radius:6px;font-size:9px;position:absolute;top:6px;right:6px">X</button>`:'';
+  return `<div class="liveCard"><div style="font-size:11px;margin-bottom:6px;color:#aaa">${m.username} <span class="dot on"></span></div>${canDel}${m.image?`<img src="${m.image}">`:''}<div style="padding:6px 0">${m.text||''}</div><div class="tick grey">✓✓ delivered</div></div>`;
+ }).join('');
+ let el=document.getElementById('liveList'); el.scrollTop=el.scrollHeight;
 }
+async function deleteLive(id){ if(!confirm('Delete?')) return; await sb.from('live_messages').delete().eq('id',id); loadLive(); }
 async function sendLive(){ let t=document.getElementById('liveInp').value.trim(); if(!t||!sb) return; document.getElementById('liveInp').value=''; await sb.from('live_messages').insert({username:ME.username, text:t, created_at:Date.now()}); loadLive(); }
-async function loadInbox(){
- if(!sb){ document.getElementById('inboxList').innerHTML='<div style="padding:20px;color:#666">Inbox needs internet</div>'; return; }
- let {data}=await sb.from('users').select('*'); let list=document.getElementById('inboxList'); list.innerHTML=(data||[]).filter(u=>u.username!==ME.username).map(u=>`<div style="padding:12px;border-bottom:1px solid #222;display:flex;justify-content:space-between" onclick="openChat('${u.username}')"><div style="display:flex;gap:8px;align-items:center"><img src="${u.avatar}" style="width:36px;height:36px;border-radius:50%"><b>${u.username}</b> ${u.online?'🟢':''}</div><span>💬</span></div>`).join('');
-}
-function openChat(u){ CUR_CHAT=u; document.getElementById('inboxList').style.display='none'; document.getElementById('secretBox').style.display='block'; document.getElementById('secretTitle').innerText=u; renderChat(); }
-async function renderChat(){ if(!CUR_CHAT||!sb) return; let {data}=await sb.from('secret_messages').select('*').or(`and(from_user.eq.${ME.username},to_user.eq.${CUR_CHAT}),and(from_user.eq.${CUR_CHAT},to_user.eq.${ME.username})`).order('created_at',{ascending:true}); document.getElementById('secretMsgs').innerHTML=(data||[]).map(m=>`<div class="bubble ${m.from_user===ME.username?'me':'other'}">${m.text||''}</div>`).join(''); }
-async function sendSecret(){ let t=document.getElementById('secretInp').value.trim(); if(!t||!CUR_CHAT||!sb) return; document.getElementById('secretInp').value=''; await sb.from('secret_messages').insert({from_user:ME.username,to_user:CUR_CHAT,text:t,delivered:true,read:false,created_at:Date.now()}); renderChat(); }
-async function loadReels(){
- let posts=[]; if(sb){ try{ let r=await sb.from('posts').select('*').eq('type','reel').order('created_at',{ascending:false}); posts=r.data||[]; }catch(e){} }
- let local=JSON.parse(localStorage.getItem('sl_posts')||'[]').filter(p=>p.type==='reel')); posts=[...posts,...local];
- document.getElementById('reelsList').innerHTML=posts.map(p=>`<div style="height:70vh;border-bottom:1px solid #222;position:relative"><img src="${p.image}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:10px;left:10px"><b>@${p.username}</b><br>${p.caption||''}</div></div>`).join('');
- if(posts[0]) CUR_REEL=posts[0].id;
-}
+async function sendLiveImg(ev){ let f=ev.target.files[0]; if(!f||!sb) return; let fr=new FileReader(); fr.onload=async()=>{ await sb.from('live_messages').insert({username:ME.username, image:fr.result, created_at:Date.now()}); loadLive(); }; fr.readAsDataURL(f); }
+
+async function loadReels(){ if(!sb) return; let {data}=await sb.from('posts').select('*').eq('type','reel').order('created_at',{ascending:false}); if(!data||data.length===0){document.getElementById('reelsList').innerHTML='<div style="padding:40px;text-align:center;color:#666">No Reels yet<br>Tap + Reels → video</div>'; return;} document.getElementById('reelsList').innerHTML=data.map(p=>{CUR_REEL=p.id; return `<div style="height:70vh;border-bottom:1px solid #111;position:relative"><img src="${p.image}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-end"><div><b>@${p.username}</b> <span class="dot on"></span><br>${p.caption||''}</div><div style="display:flex;gap:6px">${p.username===ME.username?`<button onclick="deletePost(${p.id})" style="background:#300;color:#fff;border:none;padding:6px 10px;border-radius:12px">Delete</button>`:''}<button onclick="reportPost(${p.id},'${p.username}')" style="background:#111;color:#fff;border:none;padding:6px 10px;border-radius:12px">Report</button></div></div></div>`}).join(''); }
 async function commentReel(){ let t=document.getElementById('reelInp').value.trim(); if(!t||!sb||!CUR_REEL) return; document.getElementById('reelInp').value=''; await sb.from('comments').insert({post_id:CUR_REEL, username:ME.username, text:t, created_at:Date.now()}); alert('Comment added'); }
 
-let saved=localStorage.getItem('sl_user'); if(saved){ ME=JSON.parse(saved); enterApp(); }
-</script></body></html>
+async function loadStatus(){ if(!sb) return; let {data}=await sb.from('posts').select('*').eq('type','status').order('created_at',{ascending:false}); let now=Date.now(); let valid=(data||[]).filter(p=> now - p.created_at < 86400000); document.getElementById('statusList').innerHTML=valid.map(p=>`<div style="text-align:center;position:relative"><img src="${p.image}" style="width:60px;height:60px;border-radius:50%;border:2px solid #c084fc;object-fit:cover"><div style="font-size:10px">${p.username} <span class="dot on"></span></div>${p.username===ME.username?`<button onclick="deletePost(${p.id})" style="position:absolute;top:0;right:0;background:#300;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px">x</button>`:''}</div>`).join('')||'<div style="color:#555;font-size:12px">No status</div>'; }
+
+async function loadInbox(){
+ if(!sb) return;
+ let {data:users}=await sb.from('users').select('*');
+ let {data:msgs}=await sb.from('secret_messages').select('*').eq('to_user',ME.username).eq('read',false);
+ let list=document.getElementById('inboxList');
+ if(!users||users.length<=1){ list.innerHTML='<div style="padding:20px;text-align:center;color:#666">Create 2nd account to test inbox</div>'; return; }
+ list.innerHTML=users.filter(u=>u.username!==ME.username).map(u=>{
+  let isOnline=Date.now()-u.last_seen<120000;
+  let unread=(msgs||[]).filter(m=>m.from_user===u.username).length;
+  return `<div style="padding:12px;border-bottom:1px solid #111;display:flex;justify-content:space-between;align-items:center" onclick="openChat('${u.username}')"><div style="display:flex;gap:8px;align-items:center"><img src="${u.avatar}" style="width:36px;height:36px;border-radius:50%"><div><b>${u.username}</b> <span class="dot ${isOnline?'on':''}"></span><br><small style="color:${isOnline?'#25D366':'#666'}">${isOnline?'Online':'Offline'}</small></div></div><div>${unread>0?`<span style="background:#c084fc;color:#000;padding:2px 6px;border-radius:10px;font-size:10px">${unread}</span>`:''} 💬</div></div>`;
+ }).join('');
+}
+function openChat(u){CUR=u; document.getElementById('inboxList').style.display='none'; document.getElementById('secretBox').style.display='flex'; document.getElementById('backBtn').style.display='block'; document.getElementById('secretName').innerText=u; renderChat(); if(sb) sb.from('secret_messages').update({read:true}).eq('from_user',u).eq('to_user',ME.username).then(()=>{}); }
+function closeChat(){CUR=null; document.getElementById('secretBox').style.display='none'; document.getElementById('inboxList').style.display='block'; document.getElementById('backBtn').style.display='none'; loadInbox();}
+async function renderChat(){
+ if(!sb||!CUR) return;
+ let {data}=await sb.from('secret_messages').select('*').or(`and(from_user.eq.${ME.username},to_user.eq.${CUR}),and(from_user.eq.${CUR},to_user.eq.${ME.username})`).order('created_at',{ascending:true});
+ document.getElementById('secretMsgs').innerHTML=(data||[]).map(m=>{
+  let isMe=m.from_user===ME.username;
+  let tick=isMe? (m.read?`<span class="tick blue">✓✓ read</span>`: m.delivered?`<span class="tick grey">✓✓ delivered</span>`:`<span class="tick grey">✓ sent</span>`) : '';
+  return `<div class="bubble ${isMe?'me':'other'}">${m.text||''}${m.image?`<img src="${m.image}" style="max-width:160px;border-radius:8px;margin-top:4px">`:''}<br><div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span>${tick}</span>${isMe?`<button onclick="deleteMsg(${m.id})" style="background:none;border:none;color:#555;font-size:10px">Delete</button>`:''}</div></div>`;
+ }).join('');
+ let el=document.getElementById('secretMsgs'); el.scrollTop=el.scrollHeight;
+}
+async function deleteMsg(id){ if(!confirm('Delete message?')) return; await sb.from('secret_messages').delete().eq('id',id); renderChat(); }
+async function sendSecret(){ let t=document.getElementById('secretInp').value.trim(); if(!t||!sb||!CUR) return; document.getElementById('secretInp').value=''; await sb.from('secret_messages').insert({from_user:ME.username,to_user:CUR,text:t,delivered:true,read:false,created_at:Date.now()}); renderChat(); }
+
+async fu
